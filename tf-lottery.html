@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<style>
+
+		body, input {
+			font-family: arial, helvetica, sans-serif;
+			font-size: 24px;
+		}
+
+		table {
+			background-color: #c1d2ee;
+			margin: 20px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		td.player {
+			background-color: #d6dff7;
+			text-align: center;
+			width: 150px;
+		}
+
+	</style>
+	<script>
+		window.onload = function() {
+			buildTables();
+
+			document.getElementById( 'year' ).innerHTML = ( new Date() ).getFullYear();
+		};
+
+		// Competition Participants
+		var names = [
+			'Arturek',
+			'Ewelinka',
+			'Fredzio',
+			'Grzesiu',
+			'Kubuś',
+			'Maciuś',
+			'Marunio',
+			'Michaś',
+			'Oluś',
+			'PJuś',
+			'Piotruś',
+			'Robercik',
+			'Wikciu',
+			'Wioletka'
+		];
+
+		// Those who should not play together :D
+		var girls = { 'Ewelinka': 1, 'Wioletka': 1, 'Oluś': 1 };
+
+		var loop = 0;
+
+		function run() {
+
+			var partnerGender;
+
+			names.randomize();
+
+			for ( var i = 1; i < names.length + 1; i++ ) {
+				var name = names[ i - 1 ];
+
+				if ( !partnerGender )
+					partnerGender = girls[ name ] ? 'F' : 'M';
+				else {
+					if ( girls[ name ] && partnerGender == 'F' ) {
+						run();
+						return;
+					}
+
+					partnerGender = 0;
+				}
+
+				document.getElementById( 'p' + i ).innerHTML = name;
+			}
+
+			loop++;
+
+			if ( loop < 30 ) {
+				setTimeout( run, 100 );
+			}
+		}
+
+		// http://www.htmlblog.us/random-javascript-array
+		Array.prototype.randomize = function() {
+			var i = this.length, j, temp;
+			while ( --i ) {
+				j = Math.floor( Math.random() * (i - 1) );
+				temp = this[ i ];
+				this[ i ] = this[ j ];
+				this[ j ] = temp;
+			}
+		};
+
+		var matchCount = 0,
+			playerCount = 0;
+
+		function getTable() {
+			matchCount++;
+
+			var table = document.getElementById( 'template' ).cloneNode( true );
+			table.id = 'match' + matchCount;
+			table.style.display = '';
+
+			table.getElementsByTagName( 'th' )[ 0 ].innerHTML = 'Match ' + matchCount;
+
+			for ( var i = 1; i <= 4; i++ ) {
+				playerCount++;
+				var playerCell = table.getElementsByClassName( 'player' + i )[ 0 ];
+				playerCell.id = 'p' + playerCount;
+			}
+
+			return table;
+		}
+
+		function buildTables() {
+			var tableCount = Math.ceil( names.length / 4 );
+
+			for ( var i = 0; i < tableCount; i++ ) {
+				document.body.appendChild( getTable() );
+			}
+		}
+
+	</script>
+</head>
+<body>
+
+<h1 style="text-align: center">Table-Football Tournament <span id="year"></span></h1>
+
+
+<p style="text-align: center;"><input type="button" value="Start!" onclick="this.disabled=true;run();"></p>
+
+<table id="template" style="display:none">
+	<tr>
+		<th colspan="3">&nbsp;</th>
+	</tr>
+	<tr>
+		<td class="player player1">&nbsp;</td>
+		<td rowspan="2">vs</td>
+		<td class="player player3">&nbsp;</td>
+	</tr>
+	<tr>
+		<td class="player player2">&nbsp;</td>
+		<td class="player player4">&nbsp;</td>
+	</tr>
+</table>
+
+
+</body>
+</html>
